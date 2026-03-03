@@ -1,7 +1,5 @@
 # full-stack 食用指南
 
-[点击访问](https://github.com/xuya227939/full-stack)
-
 Language: [English](./README.md) | **中文**
 
 一个基于 Next.js 16 + React 19 的全栈项目，包含：
