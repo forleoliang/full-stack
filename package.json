@@ -1,6 +1,7 @@
 {
   "name": "full-stack",
   "version": "1.0.0",
+  "description": "Full-stack Next.js 16 + React 19 template with Auth, Supabase, Stripe/Alipay, Resend. Powers SnapVee, SkillHub, Meshivo 3D and more.",
   "private": true,
   "packageManager": "bun@1.2.17",
   "engines": {
