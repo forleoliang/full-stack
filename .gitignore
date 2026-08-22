@@ -120,3 +120,7 @@ yarn-error.log*
 # Turborepo
 .turbo
 EOF
+
+# cloudflare / opennext
+.open-next/
+.wrangler/

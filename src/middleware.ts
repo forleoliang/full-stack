@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // 支持的语言（与 i18n 保持一致）
-import { LOCALE_CODES } from "@/lib/i18n";
+import { LOCALE_CODES } from "@/lib/locales";
 const supportedLanguages = LOCALE_CODES;
 type SupportedLanguage = (typeof supportedLanguages)[number];
 

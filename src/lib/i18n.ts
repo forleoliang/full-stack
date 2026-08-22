@@ -12,39 +12,14 @@ import fr from "./language/fr.json";
 import de from "./language/de.json";
 import it from "./language/it.json";
 
-// 支持的语言列表
-export const SUPPORTED_LOCALES = {
-  zh: "中文",
-  en: "English",
-  ja: "日本語",
-  ko: "한국어",
-  hi: "हिंदी",
-  "zh-TW": "繁體中文",
-  es: "Español",
-  pt: "Português",
-  ru: "Русский",
-  fr: "Français",
-  de: "Deutsch",
-  it: "Italiano",
-} as const;
+// 语言常量统一在 @/lib/locales 定义（middleware 也从那里取，避免引入本文件的 eval 依赖）
+export {
+  SUPPORTED_LOCALES,
+  LOCALE_CODES,
+} from "./locales";
+export type { Locale } from "./locales";
 
-export type Locale = keyof typeof SUPPORTED_LOCALES;
-
-// 统一 locale 列表，供 middleware、sitemap、各页面使用
-export const LOCALE_CODES: readonly Locale[] = [
-  "zh",
-  "en",
-  "ja",
-  "ko",
-  "hi",
-  "zh-TW",
-  "es",
-  "pt",
-  "ru",
-  "fr",
-  "de",
-  "it",
-] as const;
+import { SUPPORTED_LOCALES, type Locale } from "./locales";
 
 // 语言资源文件
 export const locales = {

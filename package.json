@@ -10,13 +10,16 @@
   "scripts": {
     "dev:turbopack": "next dev --turbopack",
     "dev": "next dev --webpack",
-    "build": "next build",
+    "build": "next build --webpack",
     "build:test": "cross-env NODE_ENV=test APP_ENV=test next build",
     "build:prod": "cross-env NODE_ENV=production APP_ENV=production next build",
     "start": "next start",
     "start:test": "node scripts/start-test-server.js",
     "start:prod": "node scripts/start-prod-server.js",
     "lint": "eslint .",
+    "cf:build": "opennextjs-cloudflare build",
+    "cf:preview": "opennextjs-cloudflare preview",
+    "cf:deploy": "opennextjs-cloudflare deploy",
     "worker": "cross-env NODE_ENV=production APP_ENV=production npx tsx scripts/start-worker.ts",
     "worker:convert": "cross-env NODE_ENV=production APP_ENV=production npx tsx scripts/start-convert-worker.ts",
     "worker:transcode": "cross-env NODE_ENV=production APP_ENV=production npx tsx scripts/start-transcode-worker.ts",
@@ -95,6 +98,7 @@
     "zustand": "^5.0.2"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1.20.2",
     "@types/bun": "latest",
     "@types/opencc-js": "^1.0.3",
     "@types/puppeteer": "^7.0.4",
@@ -107,6 +111,7 @@
     "tailwindcss": "^3.4.1",
     "tsx": "^4.7.1",
     "tw-animate-css": "^1.2.5",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "wrangler": "^4.125.0"
   }
 }
