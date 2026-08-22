@@ -1,14 +1,16 @@
 import { Metadata } from "next";
 import { defaultMetadata } from "@/app/metadata";
-import { LOCALE_CODES, type Locale } from "@/lib/i18n";
-import { HeroSection } from "@/components/landing/HeroSection";
-import { FeatureIntroduction } from "@/components/landing/FeatureIntroduction";
-import { ProductHighlights } from "@/components/landing/ProductHighlights";
-import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
-import { TargetAudienceSection } from "@/components/landing/TargetAudienceSection";
-import LandingPriceSection from "@/components/landing/LandingPriceSection";
-import LandingFAQSection from "@/components/landing/LandingFAQSection";
-import LandingLayout from "@/components/layouts/LandingLayout";
+import { getText, LOCALE_CODES, type Locale } from "@/lib/i18n";
+import ShopLayout from "@/components/shop/ShopLayout";
+import Hero from "@/components/shop/sections/Hero";
+import CategoryTiles from "@/components/shop/sections/CategoryTiles";
+import FeaturedProducts from "@/components/shop/sections/FeaturedProducts";
+import NewArrivals from "@/components/shop/sections/NewArrivals";
+import Lookbook from "@/components/shop/sections/Lookbook";
+import BrandStory from "@/components/shop/sections/BrandStory";
+import Reviews from "@/components/shop/sections/Reviews";
+import ShopFAQ from "@/components/shop/sections/ShopFAQ";
+import Newsletter from "@/components/shop/sections/Newsletter";
 
 export const revalidate = 300;
 
@@ -42,8 +44,18 @@ export async function generateMetadata({
     ? (targetLang as Locale)
     : "en";
 
-  const meta = defaultMetadata[isTargetLang];
-  return meta ? ({ ...meta } as Metadata) : ({ ...defaultMetadata.en } as Metadata);
+  const base = (defaultMetadata[isTargetLang] ||
+    defaultMetadata.en) as Metadata;
+
+  const title = `${getText("shop.brand", isTargetLang)} — ${getText("shop.hero.title", isTargetLang)}`;
+  const description = getText("shop.hero.subtitle", isTargetLang);
+
+  return {
+    ...base,
+    title,
+    description,
+    openGraph: { ...base.openGraph, title, description },
+  };
 }
 
 export default async function Page({
@@ -59,29 +71,33 @@ export default async function Page({
     : "en";
 
   return (
-    <LandingLayout isLanding={true} currentLocale={currentLocale}>
-      <main className="min-h-screen transition-colors duration-300 ">
-        {/* Hero Section */}
-        <HeroSection currentLocale={currentLocale} />
+    <ShopLayout currentLocale={currentLocale}>
+      {/* 主视觉 */}
+      <Hero currentLocale={currentLocale} />
 
-        {/* Features Section */}
-        <FeatureIntroduction currentLocale={currentLocale} />
+      {/* 分类入口 */}
+      <CategoryTiles currentLocale={currentLocale} />
 
-        {/* Product Highlights Section */}
-        <ProductHighlights currentLocale={currentLocale} />
+      {/* 精选单品 */}
+      <FeaturedProducts currentLocale={currentLocale} />
 
-        {/* Target Audience Section */}
-        <TargetAudienceSection currentLocale={currentLocale} />
+      {/* 穿搭画册 */}
+      <Lookbook currentLocale={currentLocale} />
 
-        {/* Pricing Section */}
-        <LandingPriceSection currentLocale={currentLocale} />
+      {/* 本周新品 */}
+      <NewArrivals currentLocale={currentLocale} />
 
-        {/* Testimonials Section */}
-        <TestimonialsSection currentLocale={currentLocale} />
+      {/* 品牌故事 */}
+      <BrandStory currentLocale={currentLocale} />
 
-        {/* FAQ Section */}
-        <LandingFAQSection currentLocale={currentLocale} />
-      </main>
-    </LandingLayout>
+      {/* 买家评价 */}
+      <Reviews currentLocale={currentLocale} />
+
+      {/* 尺码 / 物流 / 退换 FAQ */}
+      <ShopFAQ currentLocale={currentLocale} />
+
+      {/* 订阅 */}
+      <Newsletter currentLocale={currentLocale} />
+    </ShopLayout>
   );
 }

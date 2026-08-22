@@ -45,6 +45,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "oss.api-service.net.cn",
       },
+      {
+        // 商品图（占位图库图，上线前替换为自有 CDN）
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
     ],
     formats: ["image/webp", "image/avif"],
     minimumCacheTTL: 60,
@@ -65,6 +70,8 @@ const nextConfig: NextConfig = {
 
   // 头部配置 - SEO和安全优化
   async headers() {
+    const isDev = process.env.NODE_ENV === "development";
+
     return [
       {
         source: "/(.*)",
@@ -100,16 +107,24 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
+            value: isDev
+              ? "no-store, must-revalidate"
+              : "public, max-age=31536000, immutable",
           },
         ],
       },
       {
+        // 开发环境的 chunk 文件名不带 hash（如 app/[lang]/page.js），
+        // 一旦被 immutable 长缓存，改完代码浏览器仍执行旧 chunk，
+        // 会出现 "Element type is invalid. Received a promise that resolves to: undefined"。
+        // 所以只在生产环境启用强缓存。
         source: "/_next/static/(.*)",
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
+            value: isDev
+              ? "no-store, must-revalidate"
+              : "public, max-age=31536000, immutable",
           },
         ],
       },

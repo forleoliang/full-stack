@@ -119,7 +119,10 @@ html {
 }
 
 body {
-  overflow-x: hidden;
+  /* 用 clip 而不是 hidden：hidden 会让 body 变成滚动容器，
+     导致内部 position: sticky 元素（如站点顶部导航）失效。
+     html 上的 overflow-x: hidden 已经能挡住横向溢出。 */
+  overflow-x: clip;
 }
 
 /* 全局去掉所有 number input 的加减按钮 */
