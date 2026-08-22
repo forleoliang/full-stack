@@ -4,14 +4,25 @@ import { createAlipayOrder } from "@/lib/orders";
 import { AlipaySdk } from "alipay-sdk";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-const alipaySdk = new AlipaySdk({
-  appId: process.env.ALIPAY_APP_ID!,
-  privateKey: process.env.ALIPAY_PRIVATE_KEY!,
-  alipayPublicKey: process.env.ALIPAY_PUBLIC_KEY!,
-  gateway:
-    process.env.ALIPAY_GATEWAY || "https://openapi.alipay.com/gateway.do",
-  signType: "RSA2",
-});
+/**
+ * 懒加载支付宝 SDK：模块顶层 new AlipaySdk 会在 next build 收集页面数据时执行，
+ * 构建环境没有 ALIPAY_* 变量时会直接抛 "config.appId is required" 导致构建失败
+ */
+let alipaySdkInstance: AlipaySdk | null = null;
+
+function getAlipaySdk(): AlipaySdk {
+  if (!alipaySdkInstance) {
+    alipaySdkInstance = new AlipaySdk({
+      appId: process.env.ALIPAY_APP_ID!,
+      privateKey: process.env.ALIPAY_PRIVATE_KEY!,
+      alipayPublicKey: process.env.ALIPAY_PUBLIC_KEY!,
+      gateway:
+        process.env.ALIPAY_GATEWAY || "https://openapi.alipay.com/gateway.do",
+      signType: "RSA2",
+    });
+  }
+  return alipaySdkInstance;
+}
 
 /** 支付宝价格配置（可通过环境变量覆盖） */
 const ALIPAY_EARLY_BIRD_CNY = Number(
@@ -121,7 +132,7 @@ export async function POST(request: NextRequest) {
         ? `SnapVee Pro - ${normalizedBillingCycle === "yearly" ? "Yearly" : "Monthly"} Subscription`
         : "SnapVee Early Bird - Lifetime Access";
 
-    const formHtml: string = await alipaySdk.pageExec("alipay.trade.page.pay", {
+    const formHtml: string = await getAlipaySdk().pageExec("alipay.trade.page.pay", {
       notify_url: notifyUrl,
       return_url: returnUrl,
       bizContent: {

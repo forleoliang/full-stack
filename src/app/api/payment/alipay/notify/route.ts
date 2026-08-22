@@ -5,14 +5,25 @@ import { updateOrderStatus, activateAlipayOrder } from "@/lib/orders";
 import { AlipaySdk } from "alipay-sdk";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-const alipaySdk = new AlipaySdk({
-  appId: process.env.ALIPAY_APP_ID!,
-  privateKey: process.env.ALIPAY_PRIVATE_KEY!,
-  alipayPublicKey: process.env.ALIPAY_PUBLIC_KEY!,
-  gateway:
-    process.env.ALIPAY_GATEWAY || "https://openapi.alipay.com/gateway.do",
-  signType: "RSA2",
-});
+/**
+ * 懒加载支付宝 SDK：模块顶层 new AlipaySdk 会在 next build 收集页面数据时执行，
+ * 构建环境没有 ALIPAY_* 变量时会直接抛 "config.appId is required" 导致构建失败
+ */
+let alipaySdkInstance: AlipaySdk | null = null;
+
+function getAlipaySdk(): AlipaySdk {
+  if (!alipaySdkInstance) {
+    alipaySdkInstance = new AlipaySdk({
+      appId: process.env.ALIPAY_APP_ID!,
+      privateKey: process.env.ALIPAY_PRIVATE_KEY!,
+      alipayPublicKey: process.env.ALIPAY_PUBLIC_KEY!,
+      gateway:
+        process.env.ALIPAY_GATEWAY || "https://openapi.alipay.com/gateway.do",
+      signType: "RSA2",
+    });
+  }
+  return alipaySdkInstance;
+}
 
 /**
  * 支付宝会先发 GET 探活
@@ -51,7 +62,7 @@ export async function POST(request: NextRequest) {
     console.log("Alipay Notify Params:", JSON.stringify(params, null, 2));
 
     try {
-      const signVerified = alipaySdk.checkNotifySign(params);
+      const signVerified = getAlipaySdk().checkNotifySign(params);
       if (!signVerified) {
         console.error("Alipay signature verification failed");
         return new NextResponse("fail", { status: 400 });
