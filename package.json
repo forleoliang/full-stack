@@ -19,7 +19,7 @@
     "lint": "eslint .",
     "cf:build": "opennextjs-cloudflare build",
     "cf:preview": "opennextjs-cloudflare preview",
-    "cf:deploy": "opennextjs-cloudflare deploy",
+    "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "worker": "cross-env NODE_ENV=production APP_ENV=production npx tsx scripts/start-worker.ts",
     "worker:convert": "cross-env NODE_ENV=production APP_ENV=production npx tsx scripts/start-convert-worker.ts",
     "worker:transcode": "cross-env NODE_ENV=production APP_ENV=production npx tsx scripts/start-transcode-worker.ts",
